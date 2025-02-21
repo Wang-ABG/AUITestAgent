@@ -1,0 +1,22 @@
+import random
+
+words = ['python', 'hangman', 'programming']
+word = random.choice(words)
+lives = 6
+guesses = []
+
+while lives > 0 and set(word) != set(guesses):
+    print('Word:', ''.join([letter if letter in guesses else '_' for letter in word]))
+    guess = input('Guess a letter: ').lower()
+    if guess in guesses:
+        print('You already guessed that letter.')
+    elif guess in word:
+        guesses.append(guess)
+    else:
+        lives -= 1
+        print(f'{lives} lives left.')
+if set(word) == set(guesses):
+    print('Congratulations! You guessed the word:', word)
+else:
+    print('Game over. The word was:', word)
+
