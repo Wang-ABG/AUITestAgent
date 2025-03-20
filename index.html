@@ -1,66 +1,66 @@
 
-<!DOCTYPE html>
-<html lang="zh-CN">
+<！文档类型 超文本标记语言 >
+< 超文本标记语言 lang = "应用" >
 
-<head>
+< >负责人
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>内容搜索页面</title>
-  <style>
+< >风格
     /* 全局样式 */
-    html,
-    body {
+超文本标记语言，
+身体{
 高度:100%;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+保证金:0;
+填充:0;
+来源:segoe uii, Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
+颜色:# 333;
+行高:1.6;
     }
 
     /* 顶部栏样式 */
-    header {
+标题{
 显示:flex;
-      justify-content: space-between;
+justify-content:之间的空间;
 对齐项目:中心;
-      padding: 20px 50px;
+Padding: 20px 50px；
       background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+Box-shadow: 0 2px 4px rgba(0,0,0,0.05)；
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: 600;
-      color: #333;
+字体大小:24 px;
+粗细:600;
+颜色:# 333;
 文字修饰:没有;
     }
 
-    input[type="text"] {
-      width: 50%;
-      height: 40px;
-      padding: 0 20px;
-      border: 1px solid #e0e0e0;
+输入(type = "文本"]{
+宽度:50%;
+高度:40像素;
+Padding: 0 20px；
+边框：1px实心#e0e0e0；
       border-radius: 20px;
-      outline: none;
-      transition: border-color 0.3s;
+大纲:没有;
+过渡：border-color 0.3s；
 字体大小:16 px;
     }
 
-    input[type="text"]:focus {
-      border-color: #007BFF;
+输入(type = "文本"]:专注{
+边框颜色:# 007 bff;
     }
 
     .nickname {
 字体大小:16 px;
-      color: #666;
+颜色:# 666;
     }
 
     /* GitHub 登录按钮样式 */
     .github-login {
       background-color: #24292e;
-      color: white;
-      padding: 10px 20px;
+颜色:白色;
+填充：10px 20px；
       border-radius: 5px;
 文字修饰:没有;
 光标:指针;
@@ -68,9 +68,9 @@
 
     /* 修改入口按钮样式 */
     .modify-entry-btn {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
+背景色：# 007 bff；
+颜色:白色;
+填充：10px 20px；
       border-radius: 5px;
 文字修饰:没有;
 光标:指针;
@@ -78,10 +78,10 @@
     }
 
     /* 投稿按钮样式 */
-    .submit-btn {
+.submit-btn ...
       background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
+颜色:白色;
+填充：10px 20px；
       border-radius: 5px;
 文字修饰:没有;
 光标:指针;
@@ -91,40 +91,40 @@
     /* 禁用按钮样式 */
     .disabled-btn {
       background-color: #ccc;
-      cursor: not-allowed;
+光标:不允许;
     }
 
     /* 分类导航样式 */
     nav {
-      padding: 20px 50px;
+Padding: 20px 50px；
       background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      margin: 10px 0;
+Box-shadow: 0 2px 4px rgba(0,0,0,0.05)；
+Margin: 10px 0；
     }
 
     nav ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: space-around;
+list-style-type:没有;
+保证金:0;
+填充:0;
+显示:flex;
+justify-content:空间;
     }
 
     nav ul li {
-      cursor: pointer;
-      transition: all 0.3s;
-      padding: 10px 20px;
+光标:指针;
+过渡：均为0.3s；
+填充：10px 20px；
       border-radius: 20px;
-      font-size: 16px;
+字体大小:16 px;
     }
 
     nav ul li:hover {
-      color: #007BFF;
+颜色:# 007 bff;
       background-color: #f0f6ff;
     }
 
     nav ul li.active {
-      border: 1px solid rgba(0, 123, 255, 0.3);
+Border: 1px solid rgba(0,123, 255,0.3)；
       background-color: #f0f6ff;
       color: #007BFF;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
@@ -296,7 +296,7 @@
       <input type="text" placeholder="搜索">
     </form>
     <!-- GitHub 登录按钮 -->
-    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&r5cbb716923af5b063507844539bd1b2e19bb40bd=http://localhost:8080/oauth/callback&scope=user"
+    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&r5cbb716923af5b063507844539bd1b2e19bb40bd=http://localhost:8080&scope=user"
       class="github-login" id="github-login-btn">GitHub 登录</a>
     <!-- 修改入口按钮 -->
     <button class="modify-entry-btn" onclick="openModifyModal()" id="modify-entry-btn" disabled>修改设置</button>
