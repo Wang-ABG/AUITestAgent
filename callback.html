@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF - 8">
+    <meta name="viewport" content="width=device-width, initial - scale=1.0">
+    <title>Callback Page</title>
+</head>
+<body>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            // 可以在这里将授权码发送到后端服务器（如果有）进行后续处理
+            // 或者在前端进行简单的数据存储，如使用localStorage
+            localStorage.setItem('githubAuthCode', code);
+            alert('授权码已获取:'+ code);
+        }
+    </script>
+</body>
+</html>
