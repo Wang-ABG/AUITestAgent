@@ -295,7 +295,7 @@
       <input type="text" placeholder="搜索">
     </form>
     <!-- GitHub 登录按钮 -->
-    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&redirect_uri=https://wang-abg.github.io/AUITestAgent/callback&scope=user"
+    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&redirect_uri=https://wang-abg.github.io/AUITestAgent/index.html&scope=user"
       class="github-login" id="github-login-btn">GitHub 登录</a>
     <!-- 修改入口按钮 -->
     <button class="modify-entry-btn" onclick="openModifyModal()" id="modify-entry-btn" disabled>修改设置</button>
@@ -766,33 +766,64 @@
         contentType
       };
 
-      // 发送文章数据到后端
-      fetch('/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(article)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // 更新内容数量
-          const key = `${category}-${contentType}`;
-          if (!contentCount[key]) {
-            contentCount[key] = 0;
-          }
-          contentCount[key]++;
+      // 生成 HTML 文件内容
+      const htmlContent = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+</head>
+<body>
+    <h1>${title}</h1>
+    <p>${content}</p>
+</body>
+</html>
+    `;
 
-          alert('投稿成功！');
-          closeSubmitModal();
+    // 生成文件名
+    const fileName = `${title.replace(' ', '_')}.html`;
+    const filePath = `${category}/${contentType}/${fileName}`;
+
+    // GitHub 仓库信息
+    const githubUsername = 'Wang-ABG';
+    const repoName = 'AUITestAgent';
+    const token = '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';
+
+    // 构建 API 请求
+    const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
+    const base64Content = btoa(unescape(encodeURIComponent(htmlContent)));
+
+    fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: `Add article: ${title}`,
+            content: base64Content
+        })
+    })
+   .then(response => response.json())
+   .then(data => {
+        if (data.content) {
+            // 更新内容数量
+            const key = `${category}-${contentType}`;
+            if (!contentCount[key]) {
+                contentCount[key] = 0;
+            }
+            contentCount[key]++;
+
+            alert('投稿成功！');
+            closeSubmitModal();
         } else {
-          alert('投稿失败：' + data.message);
+            alert('投稿失败：' + data.message);
         }
-      })
-      .catch(error => {
+    })
+   .catch(error => {
         alert('投稿失败：' + error.message);
-      });
+    });
     }
   </script>
 </body>
