@@ -3,7 +3,7 @@ let currentContentType = '视频';
 let categoryList = [];
 let contentTypeList = [];
 let isLoggedIn = false;
-let accessToken = null;
+let accessToken = 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;
 let contentCount = {};
 let articles = JSON.parse(localStorage.getItem('articles')) || [];
 
