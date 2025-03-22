@@ -1,139 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-<！文档类型 超文本标记语言 >
-< 超文本标记语言 朗 = "应用" >
-
-< >负责人
+<head>
   <meta charset="UTF-8">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>内容搜索页面</title>
-< >风格
+  <style>
     /* 全局样式 */
-超文本标记语言，
-身体{
-高度:100%;
-保证金:0;
-填充:0;
-来源:segoe uii, Tahoma, Geneva, Verdana, sans-serif;
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f9f9f9;
-颜色:# 333;
-行高:1.6;
+      color: #333;
+      line-height: 1.6;
     }
 
     /* 顶部栏样式 */
-标题{
-显示:flex;
-justify-content:之间的空间;
-对齐项目:中心;
-Padding: 20px 50px；
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
       background-color: #fff;
-Box-shadow: 0 2px 4px rgba(0,0,0,0.05)；
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .logo {
-字体大小:24 px;
-粗细:600;
-颜色:# 333;
-文字修饰:没有;
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      text-decoration: none;
     }
 
-输入(type = "文本"]{
-宽度:50%;
-高度:40像素;
-Padding: 0 20px；
-边框：1px实心#e0e0e0；
+    input[type="text"] {
+      width: 50%;
+      height: 40px;
+      padding: 0 20px;
+      border: 1px solid #e0e0e0;
       border-radius: 20px;
-大纲:没有;
-过渡：border-color 0.3s；
-字体大小:16 px;
+      outline: none;
+      transition: border-color 0.3s;
+      font-size: 16px;
     }
 
-输入(type = "文本"]:专注{
-边框颜色:# 007 bff;
+    input[type="text"]:focus {
+      border-color: #007BFF;
     }
 
     .nickname {
-字体大小:16 px;
-颜色:# 666;
+      font-size: 16px;
+      color: #666;
     }
 
     /* GitHub 登录按钮样式 */
     .github-login {
       background-color: #24292e;
-颜色:白色;
-填充：10px 20px；
+      color: white;
+      padding: 10px 20px;
       border-radius: 5px;
-文字修饰:没有;
-光标:指针;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     /* 修改入口按钮样式 */
     .modify-entry-btn {
-背景色：# 007 bff；
-颜色:白色;
-填充：10px 20px；
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
       border-radius: 5px;
-文字修饰:没有;
-光标:指针;
+      text-decoration: none;
+      cursor: pointer;
       margin-left: 20px;
     }
 
     /* 投稿按钮样式 */
-.submit-btn ...
+    .submit-btn {
       background-color: #28a745;
-颜色:白色;
-填充：10px 20px；
+      color: white;
+      padding: 10px 20px;
       border-radius: 5px;
-文字修饰:没有;
-光标:指针;
+      text-decoration: none;
+      cursor: pointer;
       margin-left: 20px;
     }
 
     /* 禁用按钮样式 */
     .disabled-btn {
       background-color: #ccc;
-光标:不允许;
+      cursor: not-allowed;
     }
 
     /* 分类导航样式 */
     nav {
-Padding: 20px 50px；
+      padding: 20px 50px;
       background-color: #fff;
-Box-shadow: 0 2px 4px rgba(0,0,0,0.05)；
-Margin: 10px 0；
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin: 10px 0;
     }
 
     nav ul {
-list-style-type:没有;
-保证金:0;
-填充:0;
-显示:flex;
-justify-content:空间;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: space-around;
     }
 
     nav ul li {
-光标:指针;
-过渡：均为0.3s；
-填充：10px 20px；
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 10px 20px;
       border-radius: 20px;
-字体大小:16 px;
+      font-size: 16px;
     }
 
     nav ul li:hover {
-颜色:# 007 bff;
+      color: #007BFF;
       background-color: #f0f6ff;
     }
 
     nav ul li.active {
-Border: 1px solid rgba(0,123, 255,0.3)；
+      border: 1px solid rgba(0, 123, 255, 0.3);
       background-color: #f0f6ff;
-颜色:# 007 bff;
-Box-shadow: 0 0 5px rgba(0,123, 255, 0.2)；
+      color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
     }
 
     /* 当前位置显示样式 */
-#当前位置{
-Padding: 20px 50px；
-字体大小:14 px;
+    #current-location {
+      padding: 20px 50px;
+      font-size: 14px;
       color: #666;
     }
 
@@ -255,7 +254,7 @@ Padding: 20px 50px；
       margin-right: 10px;
     }
 
-.list-item按钮{
+    .list-item button {
       margin-left: 10px;
     }
 
@@ -296,7 +295,7 @@ Padding: 20px 50px；
       <input type="text" placeholder="搜索">
     </form>
     <!-- GitHub 登录按钮 -->
-    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&redirect_uri=https://wang-abg.github.io/AUITestAgent/callback.html&scope=user"
+    <a href="https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=user"
       class="github-login" id="github-login-btn">GitHub 登录</a>
     <!-- 修改入口按钮 -->
     <button class="modify-entry-btn" onclick="openModifyModal()" id="modify-entry-btn" disabled>修改设置</button>
@@ -370,7 +369,7 @@ Padding: 20px 50px；
 
   <!-- 投稿模态框 -->
   <div id="submit-modal" class="modal">
-< div class = "模式内容" >
+    <div class="modal-content">
       <span class="close" onclick="closeSubmitModal()">&times;</span>
       <h2>投稿</h2>
       <label for="title">标题:</label>
@@ -460,12 +459,12 @@ Padding: 20px 50px；
 
     // 打开修改模态框
     function openModifyModal() {
-如果（!isLoggedIn） {
+      if (!isLoggedIn) {
         alert('请先登录 GitHub 再进行修改操作。');
-返回;
+        return;
       }
-const categoryNav = document.getElementById('category-nav')；
-const contentTypeNav = document.getElementById('content-type-list')；
+      const categoryNav = document.getElementById('category-nav');
+      const contentTypeNav = document.getElementById('content-type-list');
       categoryList = Array.from(categoryNav.children).map(li => li.textContent);
       contentTypeList = Array.from(contentTypeNav.children).map(li => li.textContent);
 
@@ -675,7 +674,7 @@ const contentTypeNav = document.getElementById('content-type-list')；
 
     // 保存修改
     function saveChanges() {
-如果（!isLoggedIn） {
+      if (!isLoggedIn) {
         alert('请先登录 GitHub 再进行修改操作。');
         return;
       }
@@ -696,7 +695,7 @@ const contentTypeNav = document.getElementById('content-type-list')；
         categoryNav.appendChild(li);
       });
 
-contentTypeList。forEach((contentType, index) => {
+      contentTypeList.forEach((contentType, index) => {
         const li = document.createElement('li');
         li.textContent = contentType;
         li.onclick = function () {
@@ -713,16 +712,16 @@ contentTypeList。forEach((contentType, index) => {
 
     // 打开投稿模态框
     function openSubmitModal() {
-如果（!isLoggedIn） {
+      if (!isLoggedIn) {
         alert('请先登录 GitHub 再进行投稿操作。');
-返回;
+        return;
       }
       const categorySelect = document.getElementById('category');
       const contentTypeSelect = document.getElementById('content-type');
       categorySelect.innerHTML = '';
       contentTypeSelect.innerHTML = '';
 
-categoryList。forEach(类别=> {
+      categoryList.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
@@ -731,24 +730,24 @@ categoryList。forEach(类别=> {
 
       contentTypeList.forEach(contentType => {
         const option = document.createElement('option');
-期权。价值=内容类型;
-期权。内容=内容类型;
-contentTypeSelect.appendChild(选项);
+        option.value = contentType;
+        option.textContent = contentType;
+        contentTypeSelect.appendChild(option);
       });
 
-.style . getelementbyid(“submit-modal”)。Display = 'block'；
+      document.getElementById('submit-modal').style.display = 'block';
     }
 
     // 关闭投稿模态框
     function closeSubmitModal() {
-.style . getelementbyid(“submit-modal”)。Display = 'none'；
+      document.getElementById('submit-modal').style.display = 'none';
     }
 
     // 提交文章
     function submitArticle() {
       if (!isLoggedIn) {
         alert('请先登录 GitHub 再进行投稿操作。');
-返回;
+        return;
       }
       const title = document.getElementById('title').value;
       const content = document.getElementById('content').value;
@@ -760,29 +759,42 @@ contentTypeSelect.appendChild(选项);
         return;
       }
 
-Const article = {
+      const article = {
         title,
         content,
         category,
         contentType
       };
 
-      articles.push(article);
-localStorage。setItem(“文章”,JSON.stringify(文章));
+      // 发送文章数据到后端
+      fetch('/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(article)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // 更新内容数量
+          const key = `${category}-${contentType}`;
+          if (!contentCount[key]) {
+            contentCount[key] = 0;
+          }
+          contentCount[key]++;
 
-      // 更新内容数量
-      const key = `${category}-${contentType}`;
-      if (!contentCount[key]) {
-        contentCount[key] = 0;
-      }
-contentCount [key];
-
-      alert('投稿成功！');
-      closeSubmitModal();
+          alert('投稿成功！');
+          closeSubmitModal();
+        } else {
+          alert('投稿失败：' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('投稿失败：' + error.message);
+      });
     }
   </script>
 </body>
 
 </html>    
-
-
