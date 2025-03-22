@@ -217,6 +217,12 @@
       height: 100%;
       overflow: auto;
       background-color: rgba(0, 0, 0, 0.4);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
@@ -227,6 +233,12 @@
       width: 80%;
       max-width: 600px;
       border-radius: 10px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .close {
@@ -309,34 +321,14 @@
 
   <!-- 分类导航 -->
   <nav>
-    <ul id="category-nav">
-      <li onclick="navigateToCategory('文学', this)" class="active">文学</li>
-      <li onclick="navigateToCategory('数学', this)">数学</li>
-      <li onclick="navigateToCategory('编程', this)">编程</li>
-      <li onclick="navigateToCategory('历史', this)">历史</li>
-      <li onclick="navigateToCategory('哲学', this)">哲学</li>
-      <li onclick="navigateToCategory('政治', this)">政治</li>
-    </ul>
+    <ul id="category-nav"></ul>
   </nav>
 
   <!-- 侧边栏和内容展示区 -->
   <div class="main-container">
     <!-- 侧边栏 -->
     <aside id="sidebar">
-      <ul id="content-type-list">
-        <li onclick="navigateToContent('视频', this)" class="active">视频</li>
-        <li onclick="navigateToContent('文章', this)">文章</li>
-        <li onclick="navigateToContent('教程', this)">教程</li>
-        <li onclick="navigateToContent('课程', this)">课程</li>
-        <li onclick="navigateToContent('文件', this)">文件</li>
-        <li onclick="navigateToContent('源码', this)">源码</li>
-        <li onclick="navigateToContent('笔记', this)">笔记</li>
-        <li onclick="navigateToContent('AI知音', this)">AI知音</li>
-        <li onclick="navigateToContent('书籍', this)">书籍</li>
-        <li onclick="navigateToContent('论坛', this)">论坛</li>
-        <li onclick="navigateToContent('群聊', this)">群聊</li>
-        <li onclick="navigateToContent('购物', this)">购物</li>
-      </ul>
+      <ul id="content-type-list"></ul>
     </aside>
 
     <!-- 内容展示区 -->
@@ -390,10 +382,57 @@
     let categoryList = [];
     let contentTypeList = [];
     let isLoggedIn = false;
+    let accessToken = null; // 新增变量用于存储访问令牌
     // 模拟每个分类和内容类型组合下的内容数量
     let contentCount = {};
     // 存储投稿文章
     let articles = JSON.parse(localStorage.getItem('articles')) || [];
+
+    // 从 JSON 文件加载配置
+    async function loadConfig() {
+      try {
+        const response = await fetch('config.json');
+        const config = await response.json();
+        categoryList = config.categories;
+        contentTypeList = config.contentTypes;
+        renderNavAndSidebar();
+        navigateToCategory(categoryList[0], document.querySelector('nav ul li'));
+      } catch (error) {
+        console.error('加载配置文件时出错:', error);
+      }
+    }
+
+    // 渲染分类导航和侧边栏
+    function renderNavAndSidebar() {
+      const categoryNav = document.getElementById('category-nav');
+      const contentTypeNav = document.getElementById('content-type-list');
+      categoryNav.innerHTML = '';
+      contentTypeNav.innerHTML = '';
+
+      categoryList.forEach((category, index) => {
+        const li = document.createElement('li');
+        li.textContent = category;
+        li.onclick = function () {
+          navigateToCategory(category, this);
+        };
+        if (index === 0) {
+          li.classList.add('active');
+        }
+        categoryNav.appendChild(li);
+      });
+
+      contentTypeList.forEach((contentType, index) => {
+        const li = document.createElement('li');
+        li.textContent = contentType;
+        li.onclick = function () {
+          navigateToContent(contentType, this);
+        };
+        if (index === 0) {
+          li.classList.add('active');
+        }
+        contentTypeNav.appendChild(li);
+      });
+    }
 
     function navigateToCategory(category, element) {
       currentCategory = category;
@@ -440,21 +479,31 @@
       locationElement.textContent = `当前位置：${currentCategory} - ${currentContentType}`;
     }
 
-    // 初始化显示文学 - 视频推荐
-    navigateToContent('视频', document.querySelector('aside ul li'));
-
     // 处理 GitHub 回调
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     if (code) {
-      // 这里需要使用后端代码换取访问令牌
-      console.log('获取到授权码:', code);
-      isLoggedIn = true;
-      document.getElementById('github-login-btn').style.display = 'none';
-      document.getElementById('modify-entry-btn').disabled = false;
-      document.getElementById('modify-entry-btn').classList.remove('disabled-btn');
-      document.getElementById('submit-btn').disabled = false;
-      document.getElementById('submit-btn').classList.remove('disabled-btn');
+      // 发送授权码到后端服务器换取访问令牌
+      fetch('/exchange-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code })
+      })
+     .then(response => response.json())
+     .then(data => {
+        accessToken = data.access_token;
+        isLoggedIn = true;
+        document.getElementById('github-login-btn').style.display = 'none';
+        document.getElementById('modify-entry-btn').disabled = false;
+        document.getElementById('modify-entry-btn').classList.remove('disabled-btn');
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').classList.remove('disabled-btn');
+      })
+     .catch(error => {
+        alert('获取访问令牌失败：' + error.message);
+      });
     }
 
     // 打开修改模态框
@@ -463,11 +512,6 @@
         alert('请先登录 GitHub 再进行修改操作。');
         return;
       }
-      const categoryNav = document.getElementById('category-nav');
-      const contentTypeNav = document.getElementById('content-type-list');
-      categoryList = Array.from(categoryNav.children).map(li => li.textContent);
-      contentTypeList = Array.from(contentTypeNav.children).map(li => li.textContent);
-
       const categoryListDiv = document.getElementById('category-list');
       categoryListDiv.innerHTML = '';
       categoryList.forEach((category, index) => {
@@ -673,41 +717,32 @@
     }
 
     // 保存修改
-    function saveChanges() {
+    async function saveChanges() {
       if (!isLoggedIn) {
         alert('请先登录 GitHub 再进行修改操作。');
         return;
       }
-      const categoryNav = document.getElementById('category-nav');
-      const contentTypeNav = document.getElementById('content-type-list');
-      categoryNav.innerHTML = '';
-      contentTypeNav.innerHTML = '';
-
-      categoryList.forEach((category, index) => {
-        const li = document.createElement('li');
-        li.textContent = category;
-        li.onclick = function () {
-          navigateToCategory(category, this);
-        };
-        if (index === 0) {
-          li.classList.add('active');
+      const config = {
+        categories: categoryList,
+        contentTypes: contentTypeList
+      };
+      try {
+        const response = await fetch('/save-config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(config)
+        });
+        if (response.ok) {
+          renderNavAndSidebar();
+          closeModifyModal();
+        } else {
+          alert('保存配置文件时出错');
         }
-        categoryNav.appendChild(li);
-      });
-
-      contentTypeList.forEach((contentType, index) => {
-        const li = document.createElement('li');
-        li.textContent = contentType;
-        li.onclick = function () {
-          navigateToContent(contentType, this);
-        };
-        if (index === 0) {
-          li.classList.add('active');
-        }
-        contentTypeNav.appendChild(li);
-      });
-
-      closeModifyModal();
+      } catch (error) {
+        alert('保存配置文件时出错:', error);
+      }
     }
 
     // 打开投稿模态框
@@ -749,6 +784,10 @@
         alert('请先登录 GitHub 再进行投稿操作。');
         return;
       }
+      const submitButton = document.getElementById('submit-btn');
+      submitButton.disabled = true;
+      submitButton.textContent = '正在提交...';
+
       const title = document.getElementById('title').value;
       const content = document.getElementById('content').value;
       const category = document.getElementById('category').value;
@@ -756,6 +795,8 @@
 
       if (!title || !content || !category || !contentType) {
         alert('请填写完整的标题、内容、分类和内容类型。');
+        submitButton.disabled = false;
+        submitButton.textContent = '提交';
         return;
       }
 
@@ -781,51 +822,63 @@
 </html>
     `;
 
-    // 生成文件名
-    const fileName = `${title.replace(' ', '_')}.html`;
-    const filePath = `${category}/${contentType}/${fileName}`;
+      // 生成文件名
+      const fileName = `${title.replace(' ', '_')}.html`;
+      const filePath = `${category}/${contentType}/${fileName}`;
 
-    // GitHub 仓库信息
-    const githubUsername = 'Wang-ABG';
-    const repoName = 'AUITestAgent';
-    const token = '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';
+      // GitHub 仓库信息
+      const githubUsername = 'Wang-ABG';
+      const repoName = 'AUITestAgent';
 
-    // 构建 API 请求
-    const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
-    const base64Content = btoa(unescape(encodeURIComponent(htmlContent)));
+      // 构建 API 请求
+      const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
+      const base64Content = btoa(unescape(encodeURIComponent(htmlContent)));
 
-    fetch(apiUrl, {
+      fetch(apiUrl, {
         method: 'PUT',
         headers: {
-            'Authorization': `token ${token}`,
-            'Content-Type': 'application/json'
+          'Authorization': `token ${accessToken}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            message: `Add article: ${title}`,
-            content: base64Content
+          message: `Add article: ${title}`,
+          content: base64Content
         })
-    })
-   .then(response => response.json())
-   .then(data => {
+      })
+     .then(response => response.json())
+     .then(data => {
         if (data.content) {
-            // 更新内容数量
-            const key = `${category}-${contentType}`;
-            if (!contentCount[key]) {
-                contentCount[key] = 0;
-            }
-            contentCount[key]++;
+          // 更新内容数量
+          const key = `${category}-${contentType}`;
+          if (!contentCount[key]) {
+            contentCount[key] = 0;
+          }
+          contentCount[key]++;
 
-            alert('投稿成功！');
-            closeSubmitModal();
+          alert('投稿成功！');
+          closeSubmitModal();
         } else {
-            alert('投稿失败：' + data.message);
+          alert('投稿失败：' + data.message);
         }
-    })
-   .catch(error => {
+        submitButton.disabled = false;
+        submitButton.textContent = '提交';
+      })
+     .catch(error => {
         alert('投稿失败：' + error.message);
-    });
+        submitButton.disabled = false;
+        submitButton.textContent = '提交';
+      });
     }
-  </script>
-</body>
 
-</html>    
+    // 增加搜索功能
+    const searchInput = document.querySelector('input[type="text"]');
+    searchInput.addEventListener('input', function () {
+      const searchTerm = this.value.toLowerCase();
+      const items = document.querySelectorAll('.item');
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
