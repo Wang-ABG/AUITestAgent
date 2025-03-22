@@ -1,0 +1,290 @@
+/* 全局样式 */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 顶部栏样式 */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+}
+
+input[type="text"] {
+  width: 50%;
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-size: 16px;
+}
+
+input[type="text"]:focus {
+  border-color: #007BFF;
+}
+
+.nickname {
+  font-size: 16px;
+  color: #666;
+}
+
+/* GitHub 登录按钮样式 */
+.github-login {
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 修改入口按钮样式 */
+.modify-entry-btn {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+/* 投稿按钮样式 */
+.submit-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+/* 禁用按钮样式 */
+.disabled-btn {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 分类导航样式 */
+nav {
+  padding: 20px 50px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin: 10px 0;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+nav ul li {
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+nav ul li:hover {
+  color: #007BFF;
+  background-color: #f0f6ff;
+}
+
+nav ul li.active {
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  background-color: #f0f6ff;
+  color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* 当前位置显示样式 */
+#current-location {
+  padding: 20px 50px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 主容器样式 */
+.main-container {
+  display: flex;
+  height: calc(100vh - 200px);
+}
+
+/* 侧边栏样式 */
+aside {
+  width: 20%;
+  background-color: #fff;
+  padding: 30px;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+}
+
+aside ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+aside ul li {
+  margin-bottom: 20px;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+aside ul li:hover {
+  background-color: #f0f6ff;
+}
+
+aside ul li.active {
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  background-color: #f0f6ff;
+  color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* 内容展示区样式 */
+.content {
+  width: 80%;
+  padding: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+.item {
+  width: calc(33.33% - 20px);
+  height: 200px;
+  border: none;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+  background-color: #fff;
+  font-size: 18px;
+}
+
+.item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 修改模态框样式 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 10px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 列表项样式 */
+.list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.list-item input {
+  margin-right: 10px;
+}
+
+.list-item button {
+  margin-left: 10px;
+}
+
+/* 投稿模态框样式 */
+#submit-modal .modal-content {
+  max-width: 800px;
+}
+
+#submit-modal label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#submit-modal input,
+#submit-modal textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#submit-modal select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}    
