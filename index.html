@@ -921,4 +921,44 @@
 
     async function createFolderIfNotExists(folderPath) {
       const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${folderPath}/.gitkeep`;
-      const response = await fetch(apiUrl,
+      const maxRetries = 3;
+      let retries = 0;
+      while (retries < maxRetries) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Create folder: ${folderPath}`,
+              content: btoa(unescape(encodeURIComponent('')))
+            })
+          });
+          const data = await response.json();
+          if (response.ok || data.message === 'Validation Failed' && data.errors.some(error => error.code === 'already_exists')) {
+            return;
+          } else {
+            throw new Error(data.message);
+          }
+        } catch (error) {
+          retries++;
+          if (retries === maxRetries) {
+            throw new Error(`创建文件夹失败: ${error.message}`);
+          }
+          console.log(`请求失败，正在进行第 ${retries} 次重试...`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+    }
+
+    // 页面加载完成后执行
+    window.onload = function () {
+      handleGitHubCallback();
+      loadConfig();
+    };
+  </script>
+</body>
+
+</html>    
