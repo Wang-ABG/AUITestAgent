@@ -5,7 +5,298 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>内容搜索页面</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* 全局样式 */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 顶部栏样式 */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      text-decoration: none;
+    }
+
+    input[type="text"] {
+      width: 50%;
+      height: 40px;
+      padding: 0 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      outline: none;
+      transition: border-color 0.3s;
+      font-size: 16px;
+    }
+
+    input[type="text"]:focus {
+      border-color: #007BFF;
+    }
+
+    .nickname {
+      font-size: 16px;
+      color: #666;
+    }
+
+    /* GitHub 登录按钮样式 */
+    .github-login {
+      background-color: #24292e;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* 修改入口按钮样式 */
+    .modify-entry-btn {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-left: 20px;
+    }
+
+    /* 投稿按钮样式 */
+    .submit-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-left: 20px;
+    }
+
+    /* 禁用按钮样式 */
+    .disabled-btn {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* 分类导航样式 */
+    nav {
+      padding: 20px 50px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin: 10px 0;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 16px;
+    }
+
+    nav ul li:hover {
+      color: #007BFF;
+      background-color: #f0f6ff;
+    }
+
+    nav ul li.active {
+      border: 1px solid rgba(0, 123, 255, 0.3);
+      background-color: #f0f6ff;
+      color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    /* 当前位置显示样式 */
+    #current-location {
+      padding: 20px 50px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 主容器样式 */
+    .main-container {
+      display: flex;
+      height: calc(100vh - 200px);
+    }
+
+    /* 侧边栏样式 */
+    aside {
+      width: 20%;
+      background-color: #fff;
+      padding: 30px;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+      overflow-y: auto;
+    }
+
+    aside ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    aside ul li {
+      margin-bottom: 20px;
+      cursor: pointer;
+      padding: 10px 15px;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+      font-size: 16px;
+    }
+
+    aside ul li:hover {
+      background-color: #f0f6ff;
+    }
+
+    aside ul li.active {
+      border: 1px solid rgba(0, 123, 255, 0.3);
+      background-color: #f0f6ff;
+      color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    /* 内容展示区样式 */
+    .content {
+      width: 80%;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      overflow-y: auto;
+    }
+
+    .item {
+      width: calc(33.33% - 20px);
+      height: 200px;
+      border: none;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s;
+      background-color: #fff;
+      font-size: 18px;
+    }
+
+    .item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 修改模态框样式 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* 列表项样式 */
+    .list-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .list-item input {
+      margin-right: 10px;
+    }
+
+    .list-item button {
+      margin-left: 10px;
+    }
+
+    /* 投稿模态框样式 */
+    #submit-modal .modal-content {
+      max-width: 800px;
+    }
+
+    #submit-modal label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    #submit-modal input,
+    #submit-modal textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #submit-modal select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 
 <body>
@@ -16,7 +307,7 @@
       <input type="text" placeholder="搜索">
     </form>
     <!-- GitHub 登录按钮 -->
-    <a href="https://github.com/login/oauth/authorize?client_id=Ov23li4z3vORotr2d859&redirect_uri=https://wang-abg.github.io/AUITestAgent/index.html&scope=user"
+    <a href="https://github.com/login/oauth/authorize?client_id=Iv23liJzPwdH1ErcDx4T&redirect_uri=https://wang-abg.github.io/AUITestAgent/index.html&scope=user,repo"
       class="github-login" id="github-login-btn">GitHub 登录</a>
     <!-- 修改入口按钮 -->
     <button class="modify-entry-btn" onclick="openModifyModal()" id="modify-entry-btn" disabled>修改设置</button>
@@ -85,7 +376,556 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    let currentCategory = '文学';
+    let currentContentType = '视频';
+    let categoryList = [];
+    let contentTypeList = [];
+    let isLoggedIn = false;
+    let accessToken = null;
+    let contentCount = {};
+    let articles = JSON.parse(localStorage.getItem('articles')) || [];
+    const githubUsername = 'Wang-ABG';
+    const repoName = 'AUITestAgent';
+
+    // 从 GitHub 仓库加载配置文件
+    async function loadConfig() {
+      try {
+        const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/config.json`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const config = JSON.parse(atob(data.content));
+        categoryList = config.categories;
+        contentTypeList = config.contentTypes;
+        renderNavAndSidebar();
+        navigateToCategory(categoryList[0], document.querySelector('nav ul li'));
+      } catch (error) {
+        console.error('加载配置文件时出错:', error);
+      }
+    }
+
+    // 渲染分类导航和侧边栏
+    function renderNavAndSidebar() {
+      renderCategoryNav();
+      renderContentTypeNav();
+    }
+
+    function renderCategoryNav() {
+      const categoryNav = document.getElementById('category-nav');
+      categoryNav.innerHTML = '';
+      categoryList.forEach((category, index) => {
+        const li = createNavItem(category, () => navigateToCategory(category, li));
+        if (index === 0) {
+          li.classList.add('active');
+        }
+        categoryNav.appendChild(li);
+      });
+    }
+
+    function renderContentTypeNav() {
+      const contentTypeNav = document.getElementById('content-type-list');
+      contentTypeNav.innerHTML = '';
+      contentTypeList.forEach((contentType, index) => {
+        const li = createNavItem(contentType, () => navigateToContent(contentType, li));
+        if (index === 0) {
+          li.classList.add('active');
+        }
+        contentTypeNav.appendChild(li);
+      });
+    }
+
+    function createNavItem(text, onClick) {
+      const li = document.createElement('li');
+      li.textContent = text;
+      li.onclick = onClick;
+      return li;
+    }
+
+    function navigateToCategory(category, element) {
+      currentCategory = category;
+      updateActiveNavItems('nav ul li', element);
+      const sidebarItems = document.querySelectorAll('aside ul li');
+      updateActiveNavItems('aside ul li', sidebarItems[0]);
+      navigateToContent('视频', sidebarItems[0]);
+      updateLocationDisplay();
+    }
+
+    function navigateToContent(contentType, element) {
+      currentContentType = contentType;
+      const contentSection = document.getElementById('content');
+      contentSection.innerHTML = '';
+      for (let i = 0; i < 8; i++) {
+        const item = createContentItem(`${currentCategory} - ${contentType} 推荐 ${i + 1}`);
+        contentSection.appendChild(item);
+      }
+      const key = `${currentCategory}-${currentContentType}`;
+      if (!contentCount[key]) {
+        contentCount[key] = 8;
+      }
+      updateActiveNavItems('aside ul li', element);
+      updateLocationDisplay();
+    }
+
+    function createContentItem(text) {
+      const item = document.createElement('div');
+      item.classList.add('item');
+      item.textContent = text;
+      return item;
+    }
+
+    function updateActiveNavItems(selector, activeElement) {
+      const items = document.querySelectorAll(selector);
+      items.forEach(item => {
+        item.classList.remove('active');
+      });
+      activeElement.classList.add('active');
+    }
+
+    function updateLocationDisplay() {
+      const locationElement = document.getElementById('current-location');
+      locationElement.textContent = `当前位置：${currentCategory} - ${currentContentType}`;
+    }
+
+    // 处理 GitHub 回调
+    function handleGitHubCallback() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        exchangeToken(code)
+         .then(data => {
+            accessToken = data.access_token;
+            isLoggedIn = true;
+            updateLoginStatus();
+          })
+         .catch(error => {
+            alert('获取访问令牌失败：' + error.message);
+          });
+      }
+    }
+
+    async function exchangeToken(code) {
+      const clientId = 'Iv23liJzPwdH1ErcDx4T';
+      const clientSecret = 'af6887b692c0e96d9a294f9fef3c4a6a413313e6'; // 请替换为你的 client secret
+      const response = await fetch(`https://github.com/login/oauth/access_token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: code
+        })
+      });
+      return response.json();
+    }
+
+    function updateLoginStatus() {
+      document.getElementById('github-login-btn').style.display = 'none';
+      document.getElementById('modify-entry-btn').disabled = false;
+      document.getElementById('modify-entry-btn').classList.remove('disabled-btn');
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('submit-btn').classList.remove('disabled-btn');
+    }
+
+    // 打开修改模态框
+    function openModifyModal() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      renderModifyModal();
+      document.getElementById('modify-modal').style.display = 'block';
+    }
+
+    // 关闭修改模态框
+    function closeModifyModal() {
+      document.getElementById('modify-modal').style.display = 'none';
+    }
+
+    function renderModifyModal() {
+      renderCategoryListInModal();
+      renderContentTypeListInModal();
+    }
+
+    function renderCategoryListInModal() {
+      const categoryListDiv = document.getElementById('category-list');
+      categoryListDiv.innerHTML = '';
+      categoryList.forEach((category, index) => {
+        const itemDiv = createListItem(category, () => deleteCategoryInModal(index));
+        categoryListDiv.appendChild(itemDiv);
+      });
+    }
+
+    function renderContentTypeListInModal() {
+      const contentTypeListDiv = document.getElementById('content-type-modal-list');
+      contentTypeListDiv.innerHTML = '';
+      contentTypeList.forEach((contentType, index) => {
+        const itemDiv = createListItem(contentType, () => deleteContentTypeInModal(index));
+        contentTypeListDiv.appendChild(itemDiv);
+      });
+    }
+
+    function createListItem(value, onDelete) {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('list-item');
+      const input = document.createElement('input');
+      input.value = value;
+      itemDiv.appendChild(input);
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '删除';
+      const hasContent = checkContentExists(value, contentTypeList, contentCount);
+      if (hasContent) {
+        deleteBtn.disabled = true;
+        deleteBtn.classList.add('disabled-btn');
+      }
+      deleteBtn.onclick = onDelete;
+      itemDiv.appendChild(deleteBtn);
+      return itemDiv;
+    }
+
+    function checkContentExists(item, relatedList, countObj) {
+      let hasContent = false;
+      relatedList.forEach(relatedItem => {
+        const key = `${item}-${relatedItem}`;
+        if (countObj[key] && countObj[key] > 0) {
+          hasContent = true;
+        }
+      });
+      return hasContent;
+    }
+
+    // 添加分类（模态框内）
+    function addCategoryInModal() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      const newCategory = prompt('请输入新的分类名称');
+      if (newCategory) {
+        categoryList.push(newCategory);
+        const categoryListDiv = document.getElementById('category-list');
+        const itemDiv = createListItem(newCategory, () => deleteCategoryInModal(categoryList.length - 1));
+        categoryListDiv.appendChild(itemDiv);
+      }
+    }
+
+    // 删除分类（模态框内）
+    function deleteCategoryInModal(index) {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      const categoryToDelete = categoryList[index];
+      if (checkContentExists(categoryToDelete, contentTypeList, contentCount)) {
+        alert('该分类下有内容，禁止删除。');
+        return;
+      }
+      categoryList.splice(index, 1);
+      renderCategoryListInModal();
+    }
+
+    // 添加内容类型（模态框内）
+    function addContentTypeInModal() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      const newContentType = prompt('请输入新的内容类型名称');
+      if (newContentType) {
+        contentTypeList.push(newContentType);
+        const contentTypeListDiv = document.getElementById('content-type-modal-list');
+        const itemDiv = createListItem(newContentType, () => deleteContentTypeInModal(contentTypeList.length - 1));
+        contentTypeListDiv.appendChild(itemDiv);
+      }
+    }
+
+    // 删除内容类型（模态框内）
+    function deleteContentTypeInModal(index) {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      const contentTypeToDelete = contentTypeList[index];
+      if (checkContentExists(contentTypeToDelete, categoryList, contentCount)) {
+        alert('该内容类型下有内容，禁止删除。');
+        return;
+      }
+      contentTypeList.splice(index, 1);
+      renderContentTypeListInModal();
+    }
+
+    // 保存修改到 GitHub 仓库
+    async function saveChanges() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行修改操作。');
+        return;
+      }
+      const config = {
+        categories: categoryList,
+        contentTypes: contentTypeList
+      };
+      const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/config.json`;
+      const base64Content = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'Update config.json',
+            content: base64Content
+          })
+        });
+        const data = await response.json();
+        if (data.content) {
+          renderNavAndSidebar();
+          closeModifyModal();
+        } else {
+          alert('保存配置文件时出错：' + data.message);
+        }
+      } catch (error) {
+        alert('保存配置文件时出错：' + error.message);
+      }
+    }
+
+    // 打开投稿模态框
+    function openSubmitModal() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行投稿操作。');
+        return;
+      }
+      renderSubmitModal();
+      document.getElementById('submit-modal').style.display = 'block';
+    }
+
+    // 关闭投稿模态框
+    function closeSubmitModal() {
+      document.getElementById('submit-modal').style.display = 'none';
+    }
+
+    function renderSubmitModal() {
+      const categorySelect = document.getElementById('category');
+      const contentTypeSelect = document.getElementById('content-type');
+      categorySelect.innerHTML = '';
+      contentTypeSelect.innerHTML = '';
+      categoryList.forEach(category => {
+        const option = createOption(category);
+        categorySelect.appendChild(option);
+      });
+      contentTypeList.forEach(contentType => {
+        const option = createOption(contentType);
+        contentTypeSelect.appendChild(option);
+      });
+    }
+
+    function createOption(value) {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      return option;
+    }
+
+    // 提交文章到 GitHub 仓库
+    async function submitArticle() {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行投稿操作。');
+        return;
+      }
+      const submitButton = document.getElementById('submit-btn');
+      submitButton.disabled = true;
+      submitButton.textContent = '正在提交...';
+
+      const title = document.getElementById('title').value;
+      const content = document.getElementById('content').value;
+      const category = document.getElementById('category').value;
+      const contentType = document.getElementById('content-type').value;
+
+      if (!title || !content || !category || !contentType) {
+        alert('请填写完整的标题、内容、分类和内容类型。');
+        submitButton.disabled = false;
+        submitButton.textContent = '提交';
+        return;
+      }
+
+      const article = {
+        title,
+        content,
+        category,
+        contentType
+      };
+
+      const htmlContent = generateArticleHTML(article);
+      const jsonContent = JSON.stringify(article);
+      const htmlFileName = `${title.replace(' ', '_')}.html`;
+      const jsonFileName = `${title.replace(' ', '_')}.json`;
+      const htmlFilePath = `${category}/${contentType}/${htmlFileName}`;
+      const jsonFilePath = `${category}/${contentType}/${jsonFileName}`;
+
+      const htmlBase64Content = btoa(unescape(encodeURIComponent(htmlContent)));
+      const jsonBase64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+
+      try {
+        // 创建 HTML 文件
+        await createFile(htmlFilePath, htmlBase64Content, `Add article HTML: ${title}`);
+        // 创建 JSON 文件
+        await createFile(jsonFilePath, jsonBase64Content, `Add article JSON: ${title}`);
+
+        const key = `${category}-${contentType}`;
+        if (!contentCount[key]) {
+          contentCount[key] = 0;
+        }
+        contentCount[key]++;
+        alert('投稿成功！');
+        closeSubmitModal();
+      } catch (error) {
+        alert('投稿失败：' + error.message);
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = '提交';
+      }
+    }
+
+    async function createFile(filePath, content, message) {
+      const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          content: content
+        })
+      });
+      const data = await response.json();
+      if (!data.content) {
+        throw new Error(data.message);
+      }
+    }
+
+    function generateArticleHTML(article) {
+      return `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>${article.title}</title>
+</head>
+<body>
+    <h1>${article.title}</h1>
+    <p>${article.content}</p>
+</body>
+</html>
+    `;
+    }
+
+    // 增加搜索功能
+    const searchInput = document.querySelector('input[type="text"]');
+    searchInput.addEventListener('input', function () {
+      const searchTerm = this.value.toLowerCase();
+      const items = document.querySelectorAll('.item');
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    // 删除文章并移动到回收站
+    async function deleteArticle(article) {
+      if (!isLoggedIn) {
+        alert('请先登录 GitHub 再进行删除操作。');
+        return;
+      }
+      const title = article.title;
+      const category = article.category;
+      const contentType = article.contentType;
+      const htmlFileName = `${title.replace(' ', '_')}.html`;
+      const htmlFilePath = `${category}/${contentType}/${htmlFileName}`;
+      const recycleFilePath = `${category}/${contentType}/recycle/${htmlFileName}`;
+
+      try {
+        // 获取文件的 SHA 值
+        const getFileUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${htmlFilePath}`;
+        const getFileResponse = await fetch(getFileUrl, {
+          headers: {
+            'Authorization': `token ${accessToken}`
+          }
+        });
+        const fileData = await getFileResponse.json();
+        const sha = fileData.sha;
+
+        // 删除原文件
+        await deleteFile(htmlFilePath, sha, `Delete article: ${title}`);
+        // 创建回收站文件夹（如果不存在）
+        await createFolderIfNotExists(`${category}/${contentType}/recycle`);
+        // 移动文件到回收站
+        const htmlContent = atob(fileData.content);
+        const htmlBase64Content = btoa(unescape(encodeURIComponent(htmlContent)));
+        await createFile(recycleFilePath, htmlBase64Content, `Move article to recycle: ${title}`);
+
+        const key = `${category}-${contentType}`;
+        if (contentCount[key]) {
+          contentCount[key]--;
+        }
+        alert('文章已移动到回收站！');
+      } catch (error) {
+        alert('删除文章失败：' + error.message);
+      }
+    }
+
+    async function deleteFile(filePath, sha, message) {
+      const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
+      const response = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `token ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          sha: sha
+        })
+      });
+      const data = await response.json();
+      if (!data.commit) {
+        throw new Error(data.message);
+      }
+    }
+
+    async function createFolderIfNotExists(folderPath) {
+      const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${folderPath}/.gitkeep`;
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `Create folder: ${folderPath}`,
+          content: btoa('')
+        })
+      });
+      const data = await response.json();
+      if (!data.content && data.message !== 'File already exists') {
+        throw new Error(data.message);
+      }
+    }
+
+    // 页面加载完成后加载配置
+    window.addEventListener('load', () => {
+      loadConfig();
+      handleGitHubCallback();
+    });
+  </script>
 </body>
 
 </html>    
