@@ -390,20 +390,27 @@
 
     // 从 GitHub 仓库加载配置文件
     async function loadConfig() {
-      try {
+    if (!accessToken) {
+        console.error('访问令牌缺失，请先登录。');
+        return;
+    }
+    try {
         const apiUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/config.json`;
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+            headers: {
+                'Authorization': `token ${accessToken}`
+            }
+        });
         const data = await response.json();
         const config = JSON.parse(atob(data.content));
         categoryList = config.categories;
         contentTypeList = config.contentTypes;
         renderNavAndSidebar();
         navigateToCategory(categoryList[0], document.querySelector('nav ul li'));
-      } catch (error) {
+    } catch (error) {
         console.error('加载配置文件时出错:', error);
-      }
     }
-
+  }
     // 渲染分类导航和侧边栏
     function renderNavAndSidebar() {
       renderCategoryNav();
